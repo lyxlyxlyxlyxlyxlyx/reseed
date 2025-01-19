@@ -23,6 +23,8 @@ jobs:
           sudo docker image prune --all --force
           sudo add-apt-repository ppa:purplei2p/i2pd
           sudo -E apt -qq update
+          sudo -E apt -qq aptitude
+          sudo aptitude install -y libboost-program-options1.83.0 libminiupnpc17
           sudo -E apt -qq install i2pd zip
           sudo systemctl stop i2pd
           sudo -E apt -qq autoremove --purge
