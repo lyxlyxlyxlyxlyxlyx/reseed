@@ -44,27 +44,36 @@ jobs:
           sudo systemctl stop i2pd
 
       - name: Create reseed file
-        id: create
+        id: export
         run: |
           sudo bash -c "cd /var/lib/i2pd/netDb && find . -type f -exec zip -r /workdir/i2preseed.zip {} +"
           cd /workdir
           echo "status=success" >> $GITHUB_OUTPUT
         
-      - name: Upload firmware directory
+      - name: Upload reseed file
         uses: actions/upload-artifact@main
-        if: steps.create.outputs.status == 'success' && !cancelled()
+        if: steps.export.outputs.status == 'success' && !cancelled()
         with:
           name: i2preseed.zip
           path: /workdir
-          
+
+      - name: Generate release tag
+        id: tag
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        run: |
+          echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+          touch release.txt
+          [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
+          echo "status=success" >> $GITHUB_OUTPUT
+        
       - name: Upload reseed file to release
         uses: softprops/action-gh-release@master
-        if: steps.create.outputs.status == 'success' && !cancelled()
+        if: steps.tag.outputs.status == 'success' && steps.export.outputs.status == 'success' && !cancelled()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: $(date +"%Y.%m.%d-%H%M")
-          body_path: $(date +"%Y.%m.%d-%H%M")
+          body_path: release.txt
           files: /workdir/i2preseed.zip
 
       - name: Delete workflow runs
