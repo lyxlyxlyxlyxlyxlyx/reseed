@@ -23,7 +23,7 @@ jobs:
           sudo docker image prune --all --force
           sudo add-apt-repository ppa:purplei2p/i2pd
           sudo -E apt-get -qq update
-          sudo -E apt-get -qq install i2pd
+          sudo -E apt-get -qq install i2pd zip
           sudo systemctl stop i2pd
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
@@ -39,7 +39,10 @@ jobs:
           sudo systemctl stop i2pd
 
       - name: Create reseed file
-        run: sudo zip -r $GITHUB_WORKSPACE/i2preseed.zip . -i /var/lib/i2pd/netDb/*/*
+        run: |
+          cd /var/lib/i2pd/netDb
+          sudo find . -type f -exec zip -r $GITHUB_WORKSPACE/i2preseed.zip {} +
+          cd $GITHUB_WORKSPACE
         
       - name: Upload firmware directory
         uses: actions/upload-artifact@main
