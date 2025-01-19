@@ -40,8 +40,7 @@ jobs:
 
       - name: Create reseed file
         run: |
-          sudo cd /var/lib/i2pd/netDb
-          sudo find . -type f -exec zip -r $GITHUB_WORKSPACE/i2preseed.zip {} +
+          sudo bash -c "cd /var/lib/i2pd/netDb && find . -type f -exec zip -r /path/to/i2preseed.zip {} +"
           cd $GITHUB_WORKSPACE
         
       - name: Upload firmware directory
