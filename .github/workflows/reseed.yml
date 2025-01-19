@@ -39,20 +39,22 @@ jobs:
           sudo systemctl stop i2pd
 
       - name: Create reseed file
+        id: create
         run: |
           sudo bash -c "cd /var/lib/i2pd/netDb && find . -type f -exec zip -r $GITHUB_WORKSPACE/i2preseed.zip {} +"
           cd $GITHUB_WORKSPACE
+          echo "status=success" >> $GITHUB_OUTPUT
         
       - name: Upload firmware directory
         uses: actions/upload-artifact@main
-        if: (!cancelled())
+        if: steps.create.outputs.status == 'success' && !cancelled()
         with:
           name: i2preseed.zip
           path: $GITHUB_WORKSPACE
           
       - name: Upload reseed file to release
         uses: softprops/action-gh-release@master
-        if: (!cancelled())
+        if: steps.create.outputs.status == 'success' && !cancelled()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -68,7 +70,7 @@ jobs:
 
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@master
-        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        if: (!cancelled())
         with:
           keep_latest: 3
           delete_tags: true
