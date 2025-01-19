@@ -30,14 +30,13 @@ jobs:
 
       - name: Load custom config
         run: |
-          ls
           [ -e $GITHUB_WORKSPACE/i2pd.conf ] && sudo mv $GITHUB_WORKSPACE/i2pd.conf /var/lib/i2pd/i2pd.conf
 
       - name: Run service
         run: |
-          systemctl start i2pd
+          sudo systemctl start i2pd
           sleep 5m
-          systemctl stop i2pd
+          sudo systemctl stop i2pd
 
       - name: Create reseed file
         run: zip -r $GITHUB_WORKSPACE/i2preseed.zip /var/lib/i2pd/netDB/*/*
