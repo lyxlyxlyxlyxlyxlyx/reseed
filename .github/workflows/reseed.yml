@@ -21,14 +21,23 @@ jobs:
         run: |
           sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
           sudo docker image prune --all --force
-          sudo add-apt-repository ppa:purplei2p/i2pd
           sudo -E apt-get -qq update
-          sudo -E apt-get -qq install i2pd
-          sudo systemctl stop i2pd
+          sudo -E apt-get -qq install git zip build-essential cmake libssl-dev
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
           sudo mkdir -p /workdir
           sudo chown $USER:$GROUPS /workdir
+
+      - name: Clone Source
+        working-directory: /workdir
+        run: |
+          git clone https://github.com/PurpleI2P/i2pd.git
+          cd i2pd
+          cmake .
+          make
+          sudo make install
+          systemctl stop i2pd
+          cd ..
 
       - name: Load custom config
         working-directory: /workdir
