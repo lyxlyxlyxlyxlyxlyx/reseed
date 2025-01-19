@@ -27,14 +27,11 @@ jobs:
           sudo systemctl stop i2pd
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
-          sudo mkdir -p /workdir
-          sudo chown $USER:$GROUPS /workdir
 
       - name: Load custom config
-        working-directory: /workdir
         run: |
           ls
-          [ -e i2pd.conf ] && sudo mv i2pd.conf /var/lib/i2pd/i2pd.conf
+          [ -e $GITHUB_WORKSPACE/i2pd.conf ] && sudo mv $GITHUB_WORKSPACE/i2pd.conf /var/lib/i2pd/i2pd.conf
 
       - name: Run service
         run: |
@@ -43,18 +40,14 @@ jobs:
           systemctl stop i2pd
 
       - name: Create reseed file
-        run: zip -r i2preseed.zip /var/lib/i2pd/netDB/*/*
-
-      - name: Check space usage
-        if: (!cancelled())
-        run: df -hT
-
+        run: zip -r $GITHUB_WORKSPACE/i2preseed.zip /var/lib/i2pd/netDB/*/*
+        
       - name: Upload firmware directory
         uses: actions/upload-artifact@main
         if: (!cancelled())
         with:
           name: i2preseed.zip
-          path: /workdir
+          path: $GITHUB_WORKSPACE
           
       - name: Upload reseed file to release
         uses: softprops/action-gh-release@master
@@ -64,7 +57,7 @@ jobs:
         with:
           tag_name: $(date +"%Y.%m.%d-%H%M")
           body_path: $(date +"%Y.%m.%d-%H%M")
-          files: /workdir/i2preseed.zip
+          files: $GITHUB_WORKSPACE/i2preseed.zip
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@main
