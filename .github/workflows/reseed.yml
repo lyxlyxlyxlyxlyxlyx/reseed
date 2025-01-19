@@ -27,10 +27,6 @@ jobs:
           sudo systemctl stop i2pd
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
-          ls -l /var/lib/i2pd/
-          ls -l /var/lib/i2pd/netDB
-          ls -l /etc/i2pd
-          ls -l /etc/i2pd/netDB
 
       - name: Load custom config
         run: |
@@ -43,7 +39,7 @@ jobs:
           sudo systemctl stop i2pd
 
       - name: Create reseed file
-        run: zip -r $GITHUB_WORKSPACE/i2preseed.zip /var/lib/i2pd/netDB/*/*
+        run: zip -r $GITHUB_WORKSPACE/i2preseed.zip /var/lib/i2pd/netDb/*/*
         
       - name: Upload firmware directory
         uses: actions/upload-artifact@main
