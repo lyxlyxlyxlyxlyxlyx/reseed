@@ -1,8 +1,9 @@
 name: Creat Reseed File
 
 on:
-  repository_dispatch:
   workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
 
 env:
   TZ: Asia/Shanghai
