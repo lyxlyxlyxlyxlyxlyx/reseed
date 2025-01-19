@@ -47,7 +47,7 @@ jobs:
       - name: Create reseed file
         id: export
         run: |
-          sudo bash -c "cd /var/lib/i2pd/netDb && find . -type f -exec zip -r /workdir/i2preseed.zip {} +"
+          sudo bash -c "cd /var/lib/i2pd/netDb && zip -r /workdir/i2preseed.zip */* -j"
           cd /workdir
           echo "status=success" >> $GITHUB_OUTPUT
         
