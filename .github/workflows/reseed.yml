@@ -40,7 +40,7 @@ jobs:
 
       - name: Create reseed file
         run: |
-          cd /var/lib/i2pd/netDb
+          sudo cd /var/lib/i2pd/netDb
           sudo find . -type f -exec zip -r $GITHUB_WORKSPACE/i2preseed.zip {} +
           cd $GITHUB_WORKSPACE
         
