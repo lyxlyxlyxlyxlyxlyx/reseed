@@ -33,7 +33,7 @@ jobs:
       - name: Load custom config
         working-directory: /workdir
         run: |
-          [ -e i2pd.conf ] && mv i2pd.conf /var/lib/i2pd.conf
+          [ -e i2pd.conf ] && sudo mv i2pd.conf /var/lib/i2pd/i2pd.conf
 
       - name: Run service
         run: |
