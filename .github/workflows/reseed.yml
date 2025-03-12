@@ -3,7 +3,7 @@ name: Creat Reseed File
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '*/60 * * * *'
 
 env:
   TZ: Asia/Shanghai
@@ -41,7 +41,7 @@ jobs:
       - name: Run service
         run: |
           sudo systemctl start i2pd
-          sleep 5m
+          sleep 30m
           sudo systemctl stop i2pd
 
       - name: Create reseed file
